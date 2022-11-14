@@ -1,15 +1,14 @@
 from ctypes import sizeof
-from pickle import NONE
-import random
 import turtle
 import time
 
 window = turtle.Screen()
-side = 600
+boardSide = 600
 X = -300
 Y = 300
-window.setup(side, side)
-window.title("Kolko i krzyżyk")
+
+window.setup(boardSide, boardSide)
+window.title("Kółko i krzyżyk")
 window.bgcolor('black')
 
 turtle.color('white')
@@ -18,83 +17,86 @@ turtle.speed(0)
 turtle.hideturtle()
 
 tablica = [[None, None, None],
-            [None, None, None],
-            [None, None, None]]
+           [None, None, None],
+           [None, None, None]]
 
-space = int(side / 3)
+spaceBetweenSquares = int(boardSide / 3)
 
-for a in [1, 2]:
+for a in range(3):
     turtle.penup()
-    turtle.goto(X + a*space, Y)
+    turtle.goto(X + a*spaceBetweenSquares, Y)
     turtle.pendown()
-    turtle.goto(X + a*space, -Y)
+    turtle.goto(X + a*spaceBetweenSquares, -Y)
 
     turtle.penup()
-    turtle.goto(X, Y - a*space)
+    turtle.goto(X, Y - a*spaceBetweenSquares)
     turtle.pendown()
-    turtle.goto(-X, Y - a*space)
+    turtle.goto(-X, Y - a*spaceBetweenSquares)
 
-orderInput = turtle.textinput("Wybierz", "kolko/krzyzyk")
+orderInput = turtle.textinput("Wybierz", "kółko/krzyżyk")
 
-def orderShapes():
-    if orderInput == 'krzyzyk':
+
+def paintingOX():
+    if orderInput == 'krzyżyk':
         turtle.write("X", font=("Arial", 50))
-    elif orderInput == 'kolko':
+    elif orderInput == 'kółko':
         turtle.write("O", font=("Arial", 50))
     else:
         turtle.penup()
-        turtle.goto(-280,0)
+        turtle.goto(-280, 0)
         turtle.clear()
         turtle.write('Niepoprawny wzór', font=("Arial", 50))
         turtle.bye()
 
-def sequenceOfShapes():
+
+def orderXO():
     global orderInput
-    if orderInput == 'kolko':
-        orderInput = 'krzyzyk'
+    if orderInput == 'kółko':
+        orderInput = 'krzyżyk'
     else:
-        orderInput = 'kolko'
+        orderInput = 'kółko'
 
-def winCheck(): 
 
-    #rows for circle
-    for w in range(3):   
-        if (tablica[w][0] != None and tablica[w][0] == "kolko" and tablica[w][1] != None and tablica[w][1] == "kolko" and tablica[w][2] != None and tablica[w][2] == "kolko"):   
-            return tablica[w][2] 
+def checkingWhoWin():
 
-    #rows for cross
+    # rows for circle
     for w in range(3):
-        if (tablica[w][0] != None and tablica[w][0] == "krzyzyk" and tablica[w][1] != None and tablica[w][1] == "krzyzyk" and tablica[w][2] != None and tablica[w][2] == "krzyzyk"):   
-            return tablica[w][2] 
-   
-    #columns for circle
+        if (tablica[w][0] == "kółko" and tablica[w][1] == "kółko" and  tablica[w][2] == "kółko"):
+            return tablica[w][2]
+
+    # rows for cross
+    for w in range(3):
+        if (tablica[w][0] == "krzyżyk" and tablica[w][1] == "krzyżyk" and tablica[w][2] == "krzyżyk"):
+            return tablica[w][2]
+
+    # columns for circle
     for k in range(3):
-        if (tablica[0][k] != None and tablica[0][k] == "kolko" and tablica[1][k] != None and tablica[1][k] == "kolko" and tablica[2][k] != None and tablica[2][k] == "kolko"):   
-            return tablica[2][k] 
-    
-    #columns for cross 
+        if (tablica[0][k] == "kółko" and tablica[1][k] == "kółko"  and tablica[2][k] == "kółko"):
+            return tablica[2][k]
+
+    # columns for cross
     for k in range(3):
-        if (tablica[0][k] != None and tablica[0][k] == "krzyzyk" and tablica[1][k] != None and tablica[1][k] == "krzyzyk" and tablica[2][k] != None and tablica[2][k] == "krzyzyk"):   
-            return tablica[2][k]     
+        if (tablica[0][k] == "krzyżyk" and tablica[1][k] == "krzyżyk" and tablica[2][k] == "krzyżyk"):
+            return tablica[2][k]
 
+    if tablica[0][0] == tablica[1][1] and tablica[0][0] == tablica[2][2]:
+        return tablica[2][2]
+    if tablica[0][2] == tablica[1][1] and tablica[0][2] == tablica[2][0]:
+        return tablica[2][0]
 
-    if tablica[0][0] == tablica[1][1] and  tablica[0][0] == tablica[2][2]: return tablica[2][2]
-    if tablica[0][2] == tablica[1][1] and  tablica[0][2] == tablica[2][0]: return tablica[2][0]
+checkingWinner = checkingWhoWin
 
-    #rysowanie
+def movingTurtleAfterTheWin():
+    turtle.penup()
+    turtle.goto(-250, 0)
+    turtle.clear()
+    turtle.write("Wygrały: " + checkingWinner(), font=("Arial", 50))
 
-def writingOutTheWinner():   
-
-    if winCheck() != None:
-            turtle.penup()
-            turtle.goto(-250,0)
-            turtle.clear()
-            if winCheck() == "kolko":
-                turtle.penup()
-                turtle.goto(-230,0)
-                turtle.write("Wygrały: " + winCheck(), font=("Arial", 50))
-            elif winCheck() == "krzyzyk":
-                turtle.write("Wygrały: " + winCheck(), font=("Arial", 50))
+def writingOutTheWinner():
+    if checkingWinner() == "kółko":
+            movingTurtleAfterTheWin()
+    elif checkingWinner() == "krzyżyk":
+            movingTurtleAfterTheWin()
 
 def runGame(x, y):
 
@@ -102,28 +104,34 @@ def runGame(x, y):
     column = 0
     row = 0
 
-    if x < X + space: column = 0
-    elif x > X + 2*space: column = 2
-    else: column = 1
+    if x < X + spaceBetweenSquares:
+        column = 0
+    elif x > X + 2*spaceBetweenSquares:
+        column = 2
+    else:
+        column = 1
 
-    if y < Y - 2*space: row = 2
-    elif y > Y - space: row = 0
-    else: row = 1
-    
-    if tablica[row][column] != None: return tablica
+    if y < Y - 2*spaceBetweenSquares:
+        row = 2
+    elif y > Y - spaceBetweenSquares:
+        row = 0
+    else:
+        row = 1
 
-    centerOfColumn = (column*space + space/2) - side / 2
-    centerOfRow = (-row*space - space/2) + side / 2
-    
+    if tablica[row][column] != None:
+        return tablica
+
+    centerOfColumn = (column*spaceBetweenSquares + spaceBetweenSquares/2) - boardSide / 2
+    centerOfRow = (-row*spaceBetweenSquares - spaceBetweenSquares/2) + boardSide / 2
+
     turtle.penup()
     turtle.goto(centerOfColumn-25, centerOfRow-25)
-    
+
     tablica[row][column] = orderInput
 
-    orderShapes()
-    sequenceOfShapes()
+    paintingOX()
+    orderXO()
     writingOutTheWinner()
-    
+
 window.onclick(runGame)
 turtle.mainloop()
-
