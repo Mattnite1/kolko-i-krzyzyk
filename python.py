@@ -35,7 +35,6 @@ for a in range(3):
 
 orderInput = turtle.textinput("Wybierz", "kółko/krzyżyk")
 
-
 def paintingOX():
     if orderInput == 'krzyżyk':
         turtle.write("X", font=("Arial", 50))
@@ -48,14 +47,12 @@ def paintingOX():
         turtle.write('Niepoprawny wzór', font=("Arial", 50))
         turtle.bye()
 
-
 def orderXO():
     global orderInput
     if orderInput == 'kółko':
         orderInput = 'krzyżyk'
     else:
         orderInput = 'kółko'
-
 
 def checkingWhoWin():
 
@@ -94,9 +91,9 @@ def movingTurtleAfterTheWin():
 
 def writingOutTheWinner():
     if checkingWinner() == "kółko":
-            movingTurtleAfterTheWin()
+        movingTurtleAfterTheWin()
     elif checkingWinner() == "krzyżyk":
-            movingTurtleAfterTheWin()
+        movingTurtleAfterTheWin()
 
 def runGame(x, y):
 
