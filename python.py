@@ -1,6 +1,15 @@
 import turtle
 import time
 
+def paintGrid():
+    for a in range(3):
+        moveTurtle(X + a*spaceBetweenSquares, Y)
+        turtle.pendown()
+        turtle.goto(X + a*spaceBetweenSquares, -Y)
+        moveTurtle(X, Y - a*spaceBetweenSquares)
+        turtle.pendown()
+        turtle.goto(-X, Y - a*spaceBetweenSquares)
+
 def orderXO():
     global orderInput
     if orderInput == 'kółko':
@@ -8,19 +17,27 @@ def orderXO():
     else:
         orderInput = 'kółko'
 
-def paintingOX():
+def moveTurtle(x, y):
+    turtle.penup()
+    turtle.goto(x, y)
+
+def paintCharackter():
     if orderInput == 'krzyżyk':
         turtle.write("X", font=("Arial", 50))
     elif orderInput == 'kółko':
         turtle.write("O", font=("Arial", 50))
     else:
-        turtle.penup()
-        turtle.goto(-280, 0)
         turtle.clear()
-        turtle.write('Niepoprawny wzór', font=("Arial", 50))
+        moveTurtle(-180, 80)
+        turtle.write('Niewłaściwy', font=("Arial", 50, 'bold'))
+        moveTurtle(-100, 0)
+        turtle.write('kształt', font=("Arial", 50))
+        moveTurtle(-120, -30)
+        turtle.write('Wybierz między kółkiem, a krzyżykiem...', font=("Arial", 10, 'italic'))
+        time.sleep(4)
         turtle.bye()
 
-def checkingWhoWin():
+def checkWhoWin():
     # rows for circle
     for w in range(3):
         if (array[w][0] == "kółko" and array[w][1] == "kółko" and array[w][2] == "kółko"):
@@ -46,24 +63,22 @@ def checkingWhoWin():
     if array[0][2] == array[1][1] and array[0][2] == array[2][0]:
         return array[2][0]
 
-checkingWinner = checkingWhoWin
-
-def movingTurtleAfterTheWin():
-    turtle.penup()
-    turtle.goto(-250, 0)
+checkWinner = checkWhoWin
+def moveTurtleAfterTheWin():
+    moveTurtle(-240,0)
     turtle.clear()
-    turtle.write("Wygrały: " + checkingWinner(), font=("Arial", 50))
+    turtle.write("Wygrał: " + checkWinner(), font=("Arial", 50, 'bold'))
+    time.sleep(3)
+    turtle.bye()
 
-def writingOutTheWinner():
-    if checkingWinner() == "kółko":
-        movingTurtleAfterTheWin()
-    elif checkingWinner() == "krzyżyk":
-        movingTurtleAfterTheWin()
+moveTurtleAtEnd = moveTurtleAfterTheWin
+def writeOutTheWinner():
+    if checkWinner() == "kółko":
+        moveTurtleAtEnd()
+    elif checkWinner() == "krzyżyk":
+        moveTurtleAtEnd()
 
 def runGame(x, y):
-    column = 0
-    row = 0
-
     if x < X + spaceBetweenSquares:
         column = 0
     elif x > X + 2*spaceBetweenSquares:
@@ -86,15 +101,12 @@ def runGame(x, y):
     centerOfRow = (-row*spaceBetweenSquares -
                    spaceBetweenSquares/2) + boardSide / 2
 
-    turtle.penup()
-    turtle.goto(centerOfColumn-25, centerOfRow-25)
-
+    moveTurtle(centerOfColumn-25, centerOfRow-25)
     array[row][column] = orderInput
 
-    paintingOX()
+    paintCharackter()
     orderXO()
-    writingOutTheWinner()
-
+    writeOutTheWinner()
 
 if __name__ == "__main__":
     window = turtle.Screen()
@@ -115,17 +127,7 @@ if __name__ == "__main__":
 
     array = [[None, None, None], [None, None, None], [None, None, None]]
 
-    for a in range(3):
-        turtle.penup()
-        turtle.goto(X + a*spaceBetweenSquares, Y)
-        turtle.pendown()
-        turtle.goto(X + a*spaceBetweenSquares, -Y)
-
-        turtle.penup()
-        turtle.goto(X, Y - a*spaceBetweenSquares)
-        turtle.pendown()
-        turtle.goto(-X, Y - a*spaceBetweenSquares)
-
+    paintGrid()
     orderInput = turtle.textinput("Wybierz", "kółko/krzyżyk")
-window.onclick(runGame)
-turtle.mainloop()
+    window.onclick(runGame)
+    turtle.mainloop()
